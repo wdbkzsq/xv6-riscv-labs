@@ -1,12 +1,41 @@
-*~
-_*
+# 编译生成目标文件
 *.o
 *.d
-*.asm
-*.sym
+*.out
+*.elf
+*.bin
+*.hex
 *.img
-/mkfs/mkfs
-/kernel/kernel
-/user/usys.S
-.gdbinit
-TAGS
+*.fs
+
+# xv6 镜像与磁盘文件
+xv6.img
+fs.img
+kernel.img
+initcode
+
+# QEMU 临时文件
+*.log
+*.pid
+*.sock
+
+# Make 生成的依赖、临时文件
+Makefile.dep
+*.tmp
+
+# 编辑器与IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 构建目录
+_build/
+build/
+obj/
+
+# qemu 调试core dump
+core
+core.*

@@ -39,3 +39,6 @@ obj/
 # qemu 调试core dump
 core
 core.*
+*.asm
+*.sym
+user/_*

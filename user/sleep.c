@@ -5,10 +5,10 @@ int
 main(int argc, char **argv)
 {
   if (argc != 2) {
-    fprintf(2, "usage: sleep tick...\n");
+    fprintf(2, "usage: sleep ticks\n");
     exit(1);
   }
-  int n = atoi(argv[1]) * 10;
+  int n = atoi(argv[1]);
   pause(n);
-  return 0;
+  exit(0);
 }

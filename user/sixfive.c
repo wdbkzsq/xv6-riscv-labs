@@ -6,7 +6,7 @@ void
 sixfive(int fd)
 {
   char buf[128];
-  char div[9] = {' ', '-', '\r', '\t', '\n', '.', '/', ',', '\0'};
+  char *div = " -\r\t\n.,/";
   int flag = 1, i, sum = 0, n;
   while ((n = read(fd, buf, sizeof(buf))) > 0) {
     for (i = 0; i < n; i++) {

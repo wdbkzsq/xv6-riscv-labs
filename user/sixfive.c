@@ -7,22 +7,23 @@ sixfive(int fd)
 {
   char buf[128];
   char div[9] = {' ', '-', '\r', '\t', '\n', '.', '/', ',', '\0'};
-  int flag = 1, i, sum = 0;
-  int n = read(fd, buf, sizeof(buf) - 1);
-  for (i = 0; i < n; i++) {
-    if (buf[i] >= '0' && buf[i] <= '9' && flag == 1) {
-      sum = sum * 10 + buf[i] - '0';
-      if (i == n - 1) {
-        printf("%d\n", sum);
+  int flag = 1, i, sum = 0, n;
+  while ((n = read(fd, buf, sizeof(buf))) > 0) {
+    for (i = 0; i < n; i++) {
+      if (buf[i] >= '0' && buf[i] <= '9' && flag == 1) {
+        sum = sum * 10 + buf[i] - '0';
+        if (i == n - 1) {
+          printf("%d\n", sum);
+        }
+      } else if (strchr(div, buf[i])) {
+        if ((sum % 6 == 0 || sum % 5 == 0) && sum != 0 && flag == 1) {
+          printf("%d\n", sum);
+        }
+        sum = 0;
+        flag = 1;
+      } else {
+        flag = 0;
       }
-    } else if (strchr(div, buf[i])) {
-      if ((sum % 6 == 0 || sum % 5 == 0) && sum != 0 && flag == 1) {
-        printf("%d\n", sum);
-      }
-      sum = 0;
-      flag = 1;
-    } else {
-      flag = 0;
     }
   }
 }
@@ -39,7 +40,7 @@ main(int argc, char **argv)
   for (i = 1; i < argc; i++) {
     if ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "sixfive: cannot open %s\n", argv[i]);
-      exit(1);
+      continue;
     }
     sixfive(fd);
     close(fd);

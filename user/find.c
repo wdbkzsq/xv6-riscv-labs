@@ -17,9 +17,9 @@ fmtname(char *path)
 }
 
 void
-find(char *path, char *filename)
+find(char *path, char *filename, char **cmd)
 {
-  int fd;
+  int fd, pid, i;
   struct stat st;
   struct dirent de;
   char *p;
@@ -43,16 +43,38 @@ find(char *path, char *filename)
         continue;
       if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
         fprintf(2, "find: path too long\n");
+        continue;
       }
       strcpy(buf, path);
       p = buf + strlen(buf);
       *p++ = '/';
       strcpy(p, de.name);
-      find(buf, filename);
+      find(buf, filename, cmd);
     }
   }
   if (strcmp(fmtname(path), filename) == 0) {
-    printf("%s\n", path);
+    if (cmd == (char **)0)
+      printf("%s\n", path);
+    else {
+      pid = fork();
+      if (pid < 0) {
+        printf("find: fork failed\n");
+        exit(1);
+      }
+      if (pid == 0) {
+        char *argv[16];
+        for (i = 0; cmd[i] != 0; i++) {
+          argv[i] = cmd[i];
+        }
+        argv[i++] = path;
+        argv[i] = 0;
+        exec(argv[0], argv);
+        printf("find: exec failed\n");
+        exit(1);
+      } else {
+        wait(0);
+      }
+    }
   }
   close(fd);
   return;
@@ -65,11 +87,11 @@ main(int argc, char **argv)
     fprintf(2, "find: not enough arguments\n");
     exit(1);
   } else if (argc == 2) {
-    find(".", argv[1]);
+    find(".", argv[1], (char **)0);
   } else if (argc == 3) {
-    find(argv[1], argv[2]);
-  } else {
-    fprintf(2, "find: too much arguments\n");
-    exit(1);
+    find(argv[1], argv[2], (char **)0);
+  } else if (argc > 4 && strcmp(argv[3], "-exec") == 0) {
+    find(argv[1], argv[2], argv + 4);
   }
+  exit(0);
 }

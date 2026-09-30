@@ -298,6 +298,10 @@ kfork(void)
   release(&wait_lock);
 
   acquire(&np->lock);
+  np->syscall_mask = p->syscall_mask;
+  release(&np->lock);
+
+  acquire(&np->lock);
   np->state = RUNNABLE;
   release(&np->lock);
 

@@ -299,6 +299,7 @@ kfork(void)
 
   acquire(&np->lock);
   np->syscall_mask = p->syscall_mask;
+  safestrcpy(np->pathname, p->pathname, sizeof(p->pathname));
   release(&np->lock);
 
   acquire(&np->lock);

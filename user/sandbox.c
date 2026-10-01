@@ -10,11 +10,11 @@ main(int argc, char **argv)
   }
   int mask = atoi(argv[1]);
   if (fork() == 0) {
-    if (interpose(mask) < 0) {
+    if (interpose(mask, argv[2]) < 0) {
       fprintf(2, "sandbox: interpose failed\n");
       exit(0);
     }
-    exec(argv[2], argv + 2);
+    exec(argv[3], argv + 3);
     fprintf(2, "sandbox: exec failed\n");
     exit(1);
   }
